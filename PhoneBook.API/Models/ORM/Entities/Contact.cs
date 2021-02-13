@@ -15,6 +15,8 @@ namespace PhoneBook.API.Models.ORM.Entities
 
         public List<ContactInfo> ContactInfos { get; set; }
 
+  
+
 
 
     }
