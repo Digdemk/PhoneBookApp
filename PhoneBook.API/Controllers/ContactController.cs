@@ -86,6 +86,27 @@ namespace PhoneBook.API.Controllers
 
         }
 
+        [Route("Contact/Delete")]
+        [HttpPost]
+        public IActionResult Delete([FromForm] ContactDeleteVM contactDelete)
+        {
+            Contact contact = _phoneBookContext.Contacts.Find(contactDelete.ID);
+
+            if (contact != null)
+            {
+                contact.IsDeleted = true;
+                _phoneBookContext.SaveChanges();
+
+                return Ok(contact);
+
+            }
+
+            else
+            {
+                return BadRequest("There is no contact with that id!");
+            }
+        }
+
 
 
 
