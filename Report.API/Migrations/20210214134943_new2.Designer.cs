@@ -10,8 +10,8 @@ using Report.API.Models.ORM.Context;
 namespace Report.API.Migrations
 {
     [DbContext(typeof(ReportContext))]
-    [Migration("20210213172449_changes")]
-    partial class changes
+    [Migration("20210214134943_new2")]
+    partial class new2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

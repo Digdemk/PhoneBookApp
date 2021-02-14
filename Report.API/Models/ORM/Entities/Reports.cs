@@ -10,16 +10,16 @@ namespace Report.API.Models.ORM.Entities
     {
         public int Id { get; set; }
 
-        private bool isdelete = false;
+        private bool _isdeleted = false;
         public bool Isdeleted
         {
             get
             {
-                return isdelete;
+                return _isdeleted;
             }
             set
             {
-                isdelete = value;
+                _isdeleted = value;
             }
         }
         public DateTime AddDate { get; set; } = DateTime.Now;

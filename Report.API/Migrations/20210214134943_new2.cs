@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Report.API.Migrations
 {
-    public partial class CreateReportDB : Migration
+    public partial class new2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +14,9 @@ namespace Report.API.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    isDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    addDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    Isdeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    AddDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    Status = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
