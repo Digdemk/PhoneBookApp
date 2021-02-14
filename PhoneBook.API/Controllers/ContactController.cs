@@ -40,23 +40,36 @@ namespace PhoneBook.API.Controllers
             return contacts;
         }
 
-        //[Route("Contact/Add")]
-        //[HttpPost]
 
-        //public IActionResult AddContact([FromForm] Contact contact)
-        //{
-        //    try
-        //    {
-        //        _eCommerceContext.Add(category);
-        //        _eCommerceContext.SaveChanges();
-        //        return Ok(category);
-        //    }
-        //    catch (Exception)
-        //    {
+        [Route("Contact/{id}")]
+        [HttpGet]
+        public IActionResult GetContact(int id)
+        {
+            var contact = _phoneBookContext.Contacts.Where(q => !q.IsDeleted).FirstOrDefault(q => q.Id == id);
 
-        //        return BadRequest();
-        //    }
-        //}
+            if (contact != null)
+            {
+                ContactListVM contactList = new ContactListVM();
+
+                contactList.ID = contact.Id;
+                contactList.name = contact.Name;
+                contactList.surname = contact.Surname;
+                contactList.firm = contact.Firm;
+                contactList.contactInfos = contact.ContactInfos.Where(q => q.IsDeleted == false).ToList();
+
+                return Ok(contactList);
+
+
+            }
+
+            else
+            {
+                return BadRequest("There is no contact with that id!");
+            }
+
+
+        }
+
 
         [Route("Contact/Add")]
         [HttpPost]
@@ -104,6 +117,54 @@ namespace PhoneBook.API.Controllers
             else
             {
                 return BadRequest("There is no contact with that id!");
+            }
+        }
+
+        [Route("ContactInfo/Add")]
+        [HttpPost]
+        public IActionResult Add([FromForm] ContactInfoAddVM infoadd)
+        {
+            if (ModelState.IsValid)
+            {
+                ContactInfo contactInfo = new ContactInfo();
+                contactInfo.Phone = infoadd.phone;
+                contactInfo.Email = infoadd.eMail;
+                contactInfo.Address = infoadd.address;
+                contactInfo.Content = infoadd.content;
+                contactInfo.ContactId = infoadd.ContactId;
+
+                _phoneBookContext.ContactInfos.Add(contactInfo);
+                _phoneBookContext.SaveChanges();
+
+                infoadd.ContactId = contactInfo.ContactId;
+
+                return Ok(infoadd);
+
+            }
+            else
+            {
+                return BadRequest(ModelState.Values);
+            }
+        }
+
+        [Route("ContactInfo/Delete")]
+        [HttpPost]
+        public IActionResult Delete([FromForm] ContactInfoDeleteVM infoDelete)
+        {
+            ContactInfo contactinfo = _phoneBookContext.ContactInfos.Find(infoDelete.ID);
+
+            if (contactinfo != null)
+            {
+                contactinfo.IsDeleted = true;
+                _phoneBookContext.SaveChanges();
+
+                return Ok(contactinfo);
+
+            }
+
+            else
+            {
+                return BadRequest("There is no information with that id!");
             }
         }
 

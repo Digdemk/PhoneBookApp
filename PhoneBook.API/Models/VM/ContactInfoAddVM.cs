@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 
 namespace PhoneBook.API.Models.VM
 {
-    public class ContactAddVM
+    public class ContactInfoAddVM
     {
-        [Required]
-        public int ID { get; set; }
 
         [Required]
-        public string name { get; set; }
+        public string phone { get; set; }
 
         [Required]
-        public string surname { get; set; }
+        public string eMail { get; set; }
 
         [Required]
-        public string firm { get; set; }
+        public string address { get; set; }
+
+        [Required]
+        public string content { get; set; }
+
+        [Required]
+        public int ContactId { get; set; }
 
     }
 }
