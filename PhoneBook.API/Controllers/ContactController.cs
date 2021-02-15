@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PhoneBook.API.Models.ORM.Context;
 using PhoneBook.API.Models.ORM.Entities;
 using PhoneBook.API.Models.VM;
@@ -45,7 +46,7 @@ namespace PhoneBook.API.Controllers
         [HttpGet]
         public IActionResult GetContact(int id)
         {
-            var contact = _phoneBookContext.Contacts.Where(q => !q.IsDeleted).FirstOrDefault(q => q.Id == id);
+            var contact = _phoneBookContext.Contacts.Include(q => q.ContactInfos).Where(q => !q.IsDeleted).FirstOrDefault(q => q.Id == id);
 
             if (contact != null)
             {
