@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Confluent.Kafka;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PhoneBook.API.Models.ORM.Context;
 using PhoneBook.API.Models.ORM.Entities;
 using PhoneBook.API.Models.VM;
@@ -17,9 +19,12 @@ namespace PhoneBook.API.Controllers
     {
 
         private readonly PhoneBookContext _phoneBookContext;
-        public ContactController(PhoneBookContext phoneBookContext)
+
+        private ProducerConfig _config;
+        public ContactController(ProducerConfig config, PhoneBookContext phoneBookContext)
         {
             _phoneBookContext = phoneBookContext;
+            _config = config;
         }
 
 
@@ -33,7 +38,7 @@ namespace PhoneBook.API.Controllers
                 name = q.Name,
                 surname = q.Surname,
                 firm = q.Firm,
-                contactInfos = q.ContactInfos.Where(q => q.IsDeleted ==false).ToList()
+                contactInfos = q.ContactInfos.Where(q => q.IsDeleted == false).ToList()
 
 
             }).ToList();
@@ -83,8 +88,8 @@ namespace PhoneBook.API.Controllers
                 contact.Name = contactadd.name;
                 contact.Surname = contactadd.surname;
                 contact.Firm = contactadd.firm;
-               
-            
+
+
 
                 _phoneBookContext.Contacts.Add(contact);
                 _phoneBookContext.SaveChanges();
@@ -167,6 +172,23 @@ namespace PhoneBook.API.Controllers
             {
                 return BadRequest("There is no information with that id!");
             }
+        }
+
+
+
+        [HttpPost("send")]
+        public async Task<IActionResult> Get(string topic)
+        {
+            var people = GetContactList();
+            string serializedPeople = JsonConvert.SerializeObject(people);
+
+            using (var producer = new ProducerBuilder<Null, string>(_config).Build())
+            {
+                await producer.ProduceAsync(topic, new Message<Null, string> { Value = serializedPeople });
+                producer.Flush(TimeSpan.FromSeconds(10));
+                return Ok(people);
+            }
+
         }
 
 

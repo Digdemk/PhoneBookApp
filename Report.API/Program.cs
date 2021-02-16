@@ -1,3 +1,4 @@
+using Confluent.Kafka;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -14,6 +15,25 @@ namespace Report.API
         public static void Main(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
+
+            var config = new ConsumerConfig
+            {
+                GroupId = "gid-consumers",
+                BootstrapServers = "localhost:9092"
+            };
+
+            using (var consumer = new ConsumerBuilder<Null, string>(config).Build())
+            {
+                consumer.Subscribe("temp-topic-cf");
+                while (true)
+                {
+                    var cr = consumer.Consume();
+                    Console.WriteLine(cr.Message.Value);
+
+                }
+            }
+
+
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  phonebook.api:
+    image: ${DOCKER_REGISTRY-}phonebookapi
+    build:
+      context: .
+      dockerfile: PhoneBook.API\Dockerfile
+
+  report.api:
+    image: ${DOCKER_REGISTRY-}reportapi
+    build:
+      context: .
+      dockerfile: Report.API/Dockerfile
+
