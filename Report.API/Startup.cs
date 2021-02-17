@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Confluent.Kafka;
 
 namespace Report.API
 {
@@ -27,6 +28,16 @@ namespace Report.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            var consumerConfig = new ConsumerConfig
+            {
+                GroupId = "gid-consumer",
+                BootstrapServers = "localhost:9092",
+                AutoOffsetReset = AutoOffsetReset.Earliest
+            };
+            Configuration.Bind("consumer", consumerConfig);
+
+            services.AddSingleton<ConsumerConfig>(consumerConfig);
             services.AddControllers().AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddDbContext<ReportContext>();
         }
